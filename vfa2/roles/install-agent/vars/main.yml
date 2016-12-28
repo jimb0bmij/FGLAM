@@ -1,0 +1,8 @@
+---
+
+#- hosts: all
+#  remote_user: ahisadmin
+#  become: yes
+#  vars:
+    BIN: "FglAM-5_8_5_4_1-linux-x86_64.bin"
+  

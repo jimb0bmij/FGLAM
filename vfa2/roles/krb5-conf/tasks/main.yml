@@ -1,0 +1,26 @@
+---
+
+  - name: Copy file krb5.conf
+    become: yes
+    copy: src=krb5.conf dest=/etc/krb5.conf mode=0644 force=no
+
+
+  - name: Change fglam.config.xml krb5
+    become: yes
+    replace:
+      dest=/opt/dell/foglightagentmanager/state/default/config/fglam.config.xml
+      regexp='<config:krb5-config-file></config:krb5-config-file>'
+      replace='<config:krb5-config-file>/etc/krb5.conf</config:krb5-config-file>'
+      backup=yes
+
+
+#ansible_domain
+
+  - name: Add local domain krb5
+    become: yes
+    lineinfile: dest=/etc/krb5.conf
+                state=present
+                line=".{{ ansible_domain }} = {{ ansible_domain|upper }}"
+                backup=yes
+#                owner=root group=root mode=0644
+

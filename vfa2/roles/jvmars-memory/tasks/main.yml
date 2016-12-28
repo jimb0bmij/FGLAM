@@ -1,0 +1,88 @@
+---
+
+  - name: REMOVE vmparameter.0 = "-Dquest.common.process-runner.disabled=true
+    become: yes
+    lineinfile: dest=/opt/dell/foglightagentmanager/state/default/config/baseline.jvmargs.config
+                state=absent
+                line='vmparameter.0 = "-Dquest.common.process-runner.disabled=true";'
+                backup=yes
+
+  - name: REMOVE vmparameter.0 
+    become: yes
+    lineinfile: dest=/opt/dell/foglightagentmanager/state/default/config/baseline.jvmargs.config
+                state=absent
+                regexp='^vmparameter.0 = "-X'
+                backup=yes
+#                line='vmparameter.0 = "-X";'
+
+  - name: REMOVE vmparameter.1
+    become: yes
+    lineinfile: dest=/opt/dell/foglightagentmanager/state/default/config/baseline.jvmargs.config
+                state=absent
+                regexp='^vmparameter.1 = "-X'
+                backup=yes
+#                line='vmparameter.1 = "-X";'
+
+
+  - name: set Default Memory vars for {{ inventory_hostname }} {{ ansible_memtotal_mb }}
+    set_fact:
+         XMX: "-Xmx1g"
+         XMS: "-Xms1g"
+#    when: ({{ ansible_memtotal_mb }}  == 3946)
+
+  - name: set Memory vars for {{ inventory_hostname }} {{ ansible_memtotal_mb }}
+    set_fact:
+         XMX: "-Xmx2g"
+         XMS: "-Xms2g"
+    when: ({{ ansible_memtotal_mb }}  == 3946)
+# "ansible_memtotal_mb": 3946
+
+  - name: set Memory vars for {{ inventory_hostname }} {{ ansible_memtotal_mb }}
+    set_fact:
+         XMX: "-Xmx4g"
+         XMS: "-Xms4g"
+    when: ({{ ansible_memtotal_mb }}  == 7978)
+# "ansible_memtotal_mb": 7978
+
+  - name: set Memory vars for {{ inventory_hostname }} {{ ansible_memtotal_mb }}
+    set_fact:
+         XMX: "-Xmx6g"
+         XMS: "-Xms6g"
+    when: ({{ ansible_memtotal_mb }}  == 10001)
+#  "ansible_memtotal_mb": 10001
+
+  - name: set Memory vars for {{ inventory_hostname }} {{ ansible_memtotal_mb }}
+    set_fact:
+         XMX: "-Xmx8g"
+         XMS: "-Xms8g"
+    when: ({{ ansible_memtotal_mb }}  == 16046)
+# "ansible_memtotal_mb": 16046
+
+
+  - name: add vmparameter.0 = {{ XMX }}
+#  - name: add vmparameter.0 = -Xmx2g
+    become: yes
+    lineinfile: dest=/opt/dell/foglightagentmanager/state/default/config/baseline.jvmargs.config
+                state=present
+                line='vmparameter.0 = "{{ XMX }}";'
+                backup=yes
+#                line='vmparameter.0 = "-Xmx2g";'
+
+  - name: add vmparameter.1 = {{ XMS }}
+#  - name: add vmparameter.1 = -Xms2g
+    become: yes
+    lineinfile: dest=/opt/dell/foglightagentmanager/state/default/config/baseline.jvmargs.config
+                state=present
+                line='vmparameter.1 = "{{ XMS }}";'
+                backup=yes
+
+  - name: add vmparameter.2 = "-Dquest.common.process-runner.disabled=true
+    become: yes
+    lineinfile: dest=/opt/dell/foglightagentmanager/state/default/config/baseline.jvmargs.config
+                state=present
+                line='vmparameter.2 = "-Dquest.common.process-runner.disabled=true";'
+                backup=yes
+
+
+ 
+

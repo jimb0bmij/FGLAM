@@ -1,0 +1,25 @@
+---
+
+  - name: Rem out ulimit -n 512 start up
+    become: yes
+    lineinfile: dest=/etc/init.d/quest-fglam
+                state=present
+                regexp='^(.*)?ulimit(.*)$'
+                line='\1#ulimit\2'
+                backup=yes
+                backrefs=yes
+#                regexp='^(.*)ulimit(.*)$'
+
+    ignore_errors: yes
+
+  - name: Rem out ulimit -n 512 start up
+    become: yes
+    lineinfile: dest=/etc/init.d/dell-fglam
+                state=present
+                regexp='^(.*)?ulimit(.*)$'
+                line='\1#ulimit\2'
+                backup=yes
+                backrefs=yes
+#                regexp='^(.*)ulimit(.*)$'
+
+    ignore_errors: yes

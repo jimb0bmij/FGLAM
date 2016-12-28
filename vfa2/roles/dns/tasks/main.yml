@@ -1,0 +1,15 @@
+---
+
+
+  - name: add  DNS IP
+    become: yes
+    lineinfile: dest=/etc/network/interfaces
+                state=present
+                regexp='^(.*)dns-nameservers {{ ansible_dns.nameservers.0 }}(.*)$'
+                line='	dns-nameservers {{ ansible_dns.nameservers.0 }} 10. 10.'
+                backup=yes
+#                backrefs=yes
+
+
+  - debug: var=[ansible_dns.nameservers]
+

@@ -1,0 +1,15 @@
+---
+
+
+    - name: Allow KEY SSH access ONLY
+
+      lineinfile: dest=/etc/ssh/sshd_config
+                regexp="^PasswordAuthentication"
+                line="PasswordAuthentication no"
+                state=present
+      become: yes
+      notify: Restart ssh
+
+
+
+

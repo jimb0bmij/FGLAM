@@ -1,0 +1,36 @@
+---
+
+
+  - name: Copy file fglam bin
+    copy: src={{ BIN }} dest=/home/admin/{{ BIN }} mode=0744
+
+  - name: Check to see if install BIN exists
+    stat: path=/home/admin/{{ BIN }}
+    register: installBIN
+
+  - name: Check to see if install DIR DOESNOT exists
+    stat: path=/opt/dell/foglightagentmanager/
+    register: installDIR
+
+  - name: Launch FGLAM Agent silent installation
+    command: /home/admin/{{ BIN }} --silent --fms url=https://foo.com:8443,ssl-allow-self-signed=true,ssl-cert-common-name=quest.com,compressed=true
+    when: installBIN.stat.exists == true and installDIR.stat.exists == false
+
+#    when: ansible_distribution=='Ubuntu' and ansible_product_name == "VMware Virtual Platform"
+
+
+  - name: Check if a reboot is required
+    register: file
+    stat: path=/opt/dell/foglightagentmanager/state/default/fglam-init-script-installer.sh get_md5=no
+
+
+  - name: Set service to start
+#    service: name=quest-fglam enabled=true
+    command: /opt/dell/foglightagentmanager/state/default/fglam-init-script-installer.sh install
+    when: file.stat.exists == true
+    notify: Reboot the server
+
+  - pause: minutes=5 
+    
+
+

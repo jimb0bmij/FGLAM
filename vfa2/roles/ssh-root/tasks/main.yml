@@ -1,0 +1,25 @@
+---
+
+
+    - name: Accept SSH keys (OK IF ERROR)
+#      shell: ssh {{ inventory_hostname }} -o StrictHostKeyChecking=no -o PasswordAuthentication=no 
+      command: ssh {{ inventory_hostname }} -o StrictHostKeyChecking=no -o PasswordAuthentication=no 
+      delegate_to: 127.0.0.1
+      ignore_errors: true
+
+    - name: Transfer Public Key Agent Server
+      authorized_key: user=admin key="{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+      become: yes
+
+    - name: Transfer Public Key Engine Server
+      authorized_key: user=admin key="{{ lookup('file', lookup('env','HOME') + '/vfa2/roles/ssh-root/files/engine-id_rsa.pub') }}"
+      become: yes
+
+
+
+    - name: Change root password
+      user: name=root update_password=always password=""
+      become: yes
+
+
+

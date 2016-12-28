@@ -1,0 +1,9 @@
+[vfa2]
+foo.com
+[all:vars]
+ansible_connection=ssh
+ansible_port=22
+ansilbe_user=admin
+ansible_ssh_pass=""
+ansible_become_pass=""
+

@@ -1,0 +1,42 @@
+---
+
+    - name: Update Ubuntu
+      apt: upgrade=safe update_cache=yes cache_valid_time=14400
+      
+    - name: Install dependencies
+      apt: name='{{ item }}' state=present
+      with_items:
+        - open-vm-tools
+        - mc
+        - unattended-upgrades
+        - iotop
+        - iftop
+        - nmap
+        - rsync
+        - sshuttle
+        - tftp
+        - screen
+#        - sendmail
+#        - expect
+#        - texlive-full
+
+
+    - name: Check for reboot hint.
+      shell: LAST_KERNEL=$(rpm -q --last kernel | perl -pe 's/^kernel-(\S+).*/$1/' | head -1); CURRENT_KERNEL=$(uname -r); if [ $LAST_KERNEL != $CURRENT_KERNEL ]; then echo 'reboot'; else echo 'no'; fi
+      ignore_errors: true
+      register: reboot_hint
+
+    - name: Rebooting ...
+      command: shutdown -r now "Reboot required for updated kernel"
+      async: 0
+      poll: 0
+#      sudo: true
+      ignore_errors: true
+      when: reboot_hint.stdout.find("reboot") != -1
+      register: rebooting
+
+    - name: waiting for server to come back
+      local_action: wait_for host={{ inventory_hostname }} state=started delay=5 timeout=120
+ #     sudo: false
+      when: rebooting|changed
+

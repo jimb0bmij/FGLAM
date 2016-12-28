@@ -1,0 +1,7 @@
+---
+
+#  vars_prompt:
+#    - name: "ssh_pass"
+#      prompt: "Enter SUDO user password AGAIN for sshpass command"
+#      private: yes
+

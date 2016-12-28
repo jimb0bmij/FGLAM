@@ -1,0 +1,21 @@
+---
+
+  - name: Change fglam.config.xml upstream 5000
+    remote_user: admin
+    become: yes
+    become_user: root
+    replace:
+      dest=/opt/dell/foglightagentmanager/state/default/config/fglam.config.xml
+      regexp='<config:upstream max-queue-size="-1" max-disk-space="1024" max-batch-size="500" allow-runtime-change="true"/>'
+      replace='<config:upstream max-queue-size="-1" max-disk-space="5000" max-batch-size="500" allow-runtime-change="true"/>'
+      backup=yes
+
+  - name: Change fglam.config.xml downstream 5000
+    remote_user: admin
+    become: yes
+    become_user: root
+    replace:
+      dest=/opt/dell/foglightagentmanager/state/default/config/fglam.config.xml
+      regexp='<config:downstream max-queue-size="-1" max-disk-space="1024" max-batch-size="500" allow-runtime-change="true"/>'
+      replace='<config:downstream max-queue-size="-1" max-disk-space="5000" max-batch-size="500" allow-runtime-change="true"/>'
+      backup=yes

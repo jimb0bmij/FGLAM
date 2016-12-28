@@ -1,0 +1,74 @@
+---
+
+- hosts: all
+
+  gather_facts: yes
+  become: yes
+
+      
+
+  pre_tasks:
+
+    - stat: path=/root/fglam-installed
+      register: FI
+
+
+
+
+  roles:
+    - { role: ssh-root, when: not FI.stat.exists }
+    - { role: packages, when: not FI.stat.exists }
+    - { role: dns, when: not FI.stat.exists }
+    - { role: lvm, when: not FI.stat.exists }
+    - { role: install-agent, when: not FI.stat.exists }
+    - { role: krb5-conf, when: not FI.stat.exists }
+    - { role: stream, when: not FI.stat.exists }
+    - { role: jvmars-memory, when: not FI.stat.exists }
+    - { role: init-limit, when: not FI.stat.exists }
+    - { role: unattended-patches, when: not FI.stat.exists }
+    - { role: ssh, when: not FI.stat.exists }
+
+
+
+  handlers:
+
+
+    - name: Restart ssh
+      service: name=ssh state=restarted
+      become: yes
+
+    - name: Reboot the server
+#      command: reboot
+      shell: shutdown -r now
+#      when: file.stat.exists == true
+      become: yes
+
+
+  post_tasks:
+
+    - name: Wait for server to restart
+      local_action: wait_for host={{ inventory_hostname }} state=started delay=30 timeout=300
+      sudo: false
+
+
+    - name: Send email
+      delegate_to: 127.0.0.1
+      local_action: mail
+        host=mta.org
+        port=25
+        subject="Foglight Agent INSTALL script run on {{ inventory_hostname }} "
+        body="NEW Foglight Agent INSTALLED on {{ inventory_hostname }} "
+        from=jimb0@foo.com
+        to=jimb0@foo.com
+        charset=utf8
+      when: not FI.stat.exists
+      sudo: false
+
+
+    - name: marked done
+      file: path=/root/fglam-installed state=touch
+      when: not FI.stat.exists
+
+
+
+

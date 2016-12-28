@@ -1,0 +1,8 @@
+
+---
+
+    item: "sdb"
+    data_disks_filesystem: "lvm"
+#    data_disks_filesystem: "ext4"
+
+
